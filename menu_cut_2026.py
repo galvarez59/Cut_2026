@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-
+from mapa_puntos import MapaPuntos
 # ==================================================
 # ===   FUNCIÓN GENERAL PARA VOLVER AL MENÚ       ===
 # ==================================================
@@ -144,12 +144,18 @@ def ventana_Harley():
     etiqueta.pack(pady=10)
 
     def calcular():
-        # ==================================================
-        # ===   ESPACIO PARA CÓDIGO DE HARLEY             ===
-        # ==================================================
-        # Aquí HARLEY debe colocar su rutina.
 
-        messagebox.showinfo("Calcular", "Se ejecutó el cálculo de Harley")
+        try:
+            archivo = "mejillones_acii_civil3d.txt"
+
+            mapa = MapaPuntos(archivo)
+
+            mapa.leer_archivo()
+
+            mapa.graficar()
+
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
 
     boton_calcular = ttk.Button(win, text="Calcular", command=calcular)
     boton_calcular.pack(pady=15)
