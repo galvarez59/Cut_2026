@@ -69,7 +69,7 @@ def ventana_main():
 
 
 # ==================================================
-# ===   SUBRUTINA AYLEEN                         ===
+# ===   SUBRUTINA AYLEEN    gaaa                     ===
 # ==================================================
 def ventana_ayleen():
     root.withdraw()
@@ -241,7 +241,7 @@ def ventana_Rafael():
 
     def calcular():
         # ==================================================
-        # ===   ESPACIO PARA CÓDIGO DE RAFAEL             ===
+        # ===   ESPACIO PARA CÓDIGO DE RAFAEL gaaa            ===
         # ==================================================
         # Aquí RAFAEL debe colocar su rutina.
 
