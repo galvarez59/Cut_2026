@@ -185,26 +185,32 @@ def ventana_Ignacio():
 
     etiqueta = ttk.Label(
         win,
-        text="Aquí Ignacio debe colocar su código",
+        text="Filtrado Batimétrico - Polígono 3",
         font=("Segoe UI", 12),
         background="#ecf0f1"
     )
     etiqueta.pack(pady=10)
 
     def calcular():
-        # ==================================================
-        # ===   ESPACIO PARA CÓDIGO DE IGNACIO            ===
-        # ==================================================
-        # Aquí IGNACIO debe colocar su rutina.
-
-        messagebox.showinfo("Calcular", "Se ejecutó el cálculo de Ignacio")
+        # Fronteras espaciales ortogonales (Polígono 3)
+        limite_x_min = 348600.0
+        limite_x_max = 353600.0
+        limite_y_min = 7457600.0
+        limite_y_max = 7462600.0
+        
+        archivo_origen = 'batimetria_mejillones.asc'
+        archivo_destino = 'segmentacion_ignacio.txt'
+        
+        print(f"Preparando polígono 3. Archivo origen: {archivo_origen}")
+        
+        messagebox.showinfo("Estado", "Variables espaciales del Polígono 3 inicializadas.")
 
     boton_calcular = ttk.Button(win, text="Calcular", command=calcular)
     boton_calcular.pack(pady=15)
 
     boton_volver = ttk.Button(
         win,
-        text="Volver al Menú Principal",
+        text="Volver al Menú",
         command=lambda: volver_al_menu(win)
     )
     boton_volver.pack(pady=10)
