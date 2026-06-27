@@ -315,13 +315,13 @@ def ventana_Andres():
     root.withdraw()
 
     win = tk.Toplevel(root)
-    win.title("Ventana Andres")
+    win.title("Ventana Andrés")
     win.geometry("450x300")
     win.configure(bg="#ecf0f1")
 
     titulo = ttk.Label(
         win,
-        text="Subrutina: Andres",
+        text="Subrutina: Andrés",
         font=("Segoe UI", 18, "bold"),
         background="#ecf0f1"
     )
@@ -329,21 +329,41 @@ def ventana_Andres():
 
     etiqueta = ttk.Label(
         win,
-        text="Aquí Andres debe colocar su código",
+        text="Filtrado Batimétrico - Polígono 6",
         font=("Segoe UI", 12),
         background="#ecf0f1"
     )
     etiqueta.pack(pady=10)
 
     def calcular():
-        # ==================================================
-        # ===   ESPACIO PARA CÓDIGO DE ANDRES             ===
-        # ==================================================
-        # Aquí ANDRES debe colocar su rutina.
+        archivo_origen = 'batimetria_mejillones.asc'
+        archivo_destino = 'segmentacion_poligono_6.txt'
+        
+        print(f"Iniciando extracción de coordenadas desde: {archivo_origen}")
 
-        messagebox.showinfo("Calcular", "Se ejecutó el cálculo de Andres")
+        try:
+            with open(archivo_origen, 'r') as f_in:
+                for linea in f_in:
+                    try:
+                        # Parseo de datos para extraer X e Y
+                        datos = linea.strip().replace(',', ' ').split()
+                        
+                        if len(datos) >= 2:
+                            x = float(datos[0])
+                            y = float(datos[1])
+                            
+                            # Aquí irá la inecuación del rombo en el próximo commit
+                            
+                    except ValueError:
+                        continue # Omite encabezados o líneas sin números
+            
+            # Mensaje en pantalla confirmando el segundo avance
+            messagebox.showinfo("Éxito", "Extracción de coordenadas X e Y finalizada correctamente.")
 
-    boton_calcular = ttk.Button(win, text="Calcular", command=calcular)
+        except FileNotFoundError:
+            messagebox.showerror("Error crítico", f"No se encontró el archivo: {archivo_origen}")
+
+    boton_calcular = ttk.Button(win, text="Ejecutar Filtro", command=calcular)
     boton_calcular.pack(pady=15)
 
     boton_volver = ttk.Button(
