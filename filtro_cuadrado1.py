@@ -1,18 +1,18 @@
+import pandas as pd
 import numpy as np
 from scipy.ndimage import uniform_filter
 
 def cargar_datos(archivo):
-    # Asumimos que tu archivo tiene formato: X Y Z
-    # Si tiene encabezados, agrega skip_header=1
-    datos = np.loadtxt(archivo)
+    # 'on_bad_lines="warn"' permite que el programa continúe aunque encuentre filas irregulares
+    # 'sep=None' detecta automáticamente si usas espacios o comas
+    df = pd.read_csv(archivo, sep=None, engine='python', skiprows=1, on_bad_lines='skip')
+    
+    # Tomamos solo las columnas numéricas
+    datos = df.select_dtypes(include=[np.number]).values
     return datos
 
 def aplicar_filtro_cuadrado(datos, tamano_ventana=3):
-    # 'datos' debe ser una matriz 2D (grid).
-    # Si tus datos son puntos sueltos (X, Y, Z),
-    # primero deberías transformarlos a un grid.
-    
-    # Aquí aplicamos el filtro de media (filtro cuadrado)
+    # uniform_filter suaviza los datos usando una ventana cuadrada
     filtro = uniform_filter(datos, size=tamano_ventana, mode='constant')
     return filtro
 
@@ -20,14 +20,8 @@ if __name__ == "__main__":
     archivo = "mejillones_ascii.txt"
     try:
         data = cargar_datos(archivo)
-        
-        # Aquí estamos asumiendo que tu archivo es una matriz rectangular 
-        # (si es una lista de puntos, necesitarías un paso previo de interpolación)
         resultado = aplicar_filtro_cuadrado(data, tamano_ventana=3)
-        
-        # Guardar resultado
         np.savetxt("resultado_filtrado.txt", resultado)
-        print("¡Filtro aplicado con éxito! Resultado guardado en 'resultado_filtrado.txt'.")
-        
+        print("¡ÉXITO! Filtro aplicado. Resultado guardado en 'resultado_filtrado.txt'.")
     except Exception as e:
         print(f"Ocurrió un error: {e}")
