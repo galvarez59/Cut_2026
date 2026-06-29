@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+import pandas as pd
+from matplotlib.path import Path
+
 # ==================================================
 # ===   FUNCIÓN GENERAL PARA VOLVER AL MENÚ       ===
 # ==================================================
@@ -281,19 +284,48 @@ def ventana_Wilson():
 
     etiqueta = ttk.Label(
         win,
-        text="Aquí Wilson debe colocar su código",
+        text="Filtrado del Polígono 5",
         font=("Segoe UI", 12),
         background="#ecf0f1"
     )
     etiqueta.pack(pady=10)
 
     def calcular():
-        # ==================================================
-        # ===   ESPACIO PARA CÓDIGO DE WILSON             ===
-        # ==================================================
-        # Aquí WILSON debe colocar su rutina.
 
-        messagebox.showinfo("Calcular", "Se ejecutó el cálculo de Wilson")
+        datos = pd.read_csv(
+            "mejillones_acii (1).txt",
+            sep=r"\s+",
+            engine="python",
+            header=None,
+            names=["L","E","N","Z"]
+        )
+
+        datos = datos[["E","N","Z"]]
+
+        poligono5 = [
+            (333600,7447600),
+            (338600,7452600),
+            (343600,7447600),
+            (338600,7442600)
+        ]
+
+        path = Path(poligono5)
+
+        dentro = path.contains_points(datos[["E","N"]].values)
+
+        pol5 = datos[dentro]
+
+        pol5.to_csv(
+            "poligono5.txt",
+            sep=" ",
+            index=False,
+            header=True
+        )
+
+        messagebox.showinfo(
+            "Wilson",
+            f"Proceso terminado.\nPuntos encontrados: {len(pol5)}"
+        )
 
     boton_calcular = ttk.Button(win, text="Calcular", command=calcular)
     boton_calcular.pack(pady=15)
@@ -306,7 +338,6 @@ def ventana_Wilson():
     boton_volver.pack(pady=10)
 
     win.protocol("WM_DELETE_WINDOW", lambda: volver_al_menu(win))
-
 
 # ==================================================
 # ===   SUBRUTINA ANDRES                         ===
