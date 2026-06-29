@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-
+import pandas as pd
 # ==================================================
 # ===   FUNCIÓN GENERAL PARA VOLVER AL MENÚ       ===
 # ==================================================
@@ -97,11 +97,37 @@ def ventana_ayleen():
 
     def calcular():
         # ==================================================
-        # ===   ESPACIO PARA CÓDIGO DE AYLEEN             ===
+
+        archivo = r"C:\Users\aylle\OneDrive\Documentos\github 3\Cut_2026\mejillones_ascii.txt"
+        x_lim = [334100, 336600] 
+        y_lim = [7455100, 7457600] 
+        
+        try:
+            df = pd.read_csv(archivo, sep=r'\s+', engine='python', header=None, 
+                            names=['Letra', 'X', 'Y', 'Z'], on_bad_lines='skip')
+            
+            mask = (df['X'] >= x_lim[0]) & (df['X'] <= x_lim[1]) & \
+                (df['Y'] >= y_lim[0]) & (df['Y'] <= y_lim[1])
+            
+            resultado = df[mask]
+            datos_puntos = resultado[['X', 'Y', 'Z']]
+            
+            datos_puntos.to_csv("resultado_cuadrado_1.txt", index=False, header=False, sep=' ')
+            
+            # --- AQUÍ ESTÁ EL CAMBIO PARA MOSTRAR LOS PUNTOS ---
+            # Convertimos los puntos a texto para el mensaje
+            texto_puntos = datos_puntos.to_string(index=False)
+            
+            mensaje_final = f"¡Cálculo exitoso!\n\nSe han extraído {len(resultado)} puntos:\n\n{texto_puntos}\nArchivo guardado: 'resultado_cuadrado_1.txt'"
+            
+            messagebox.showinfo("Resultado del Cálculo", mensaje_final)
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un error: {e}")
         # ==================================================
         # Aquí AYLEEN debe colocar su rutina.
 
-        messagebox.showinfo("Calcular", "Se ejecutó el cálculo de ayleen")
+    messagebox.showinfo("Calcular", "Se ejecutó el cálculo de ayleen")
 
     boton_calcular = ttk.Button(win, text="Calcular", command=calcular)
     boton_calcular.pack(pady=15)
