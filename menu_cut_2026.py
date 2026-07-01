@@ -36,7 +36,7 @@ def ventana_main():
 
     etiqueta = ttk.Label(
         win,
-        text="Aquí main debe colocar su código",
+        text="Aquí main debe colocar su código gaaa",
         font=("Segoe UI", 12),
         background="#ecf0f1"
     )
