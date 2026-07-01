@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 
 # ==================================================
 # ===   FUNCIÓN GENERAL PARA VOLVER AL MENÚ       ===
@@ -211,44 +211,118 @@ def ventana_Ignacio():
 
     win.protocol("WM_DELETE_WINDOW", lambda: volver_al_menu(win))
 
-
 # ==================================================
-# ===   SUBRUTINA RAFAEL                         ===
+# ===   SUBRUTINA RAFAEL (CUADRO 4)              ===
 # ==================================================
 def ventana_Rafael():
     root.withdraw()
 
     win = tk.Toplevel(root)
-    win.title("Ventana Rafael")
-    win.geometry("450x300")
+    win.title("Ventana Rafael (Cuadro 4)")
+    win.geometry("450x350")
     win.configure(bg="#ecf0f1")
 
     titulo = ttk.Label(
         win,
-        text="Subrutina: Rafael",
+        text="Subrutina: Rafael (Cuadro 4)",
         font=("Segoe UI", 18, "bold"),
         background="#ecf0f1"
     )
-    titulo.pack(pady=30)
+    titulo.pack(pady=20)
 
-    etiqueta = ttk.Label(
+    # Texto con formato especificado en letras rojas
+    etiqueta_formato = tk.Label(
         win,
-        text="Aquí Rafael debe colocar su código",
-        font=("Segoe UI", 12),
-        background="#ecf0f1"
+        text="Formato requerido del archivo txt:\nNombre, Este, Norte, Cota",
+        font=("Segoe UI", 12, "bold"),
+        fg="red",
+        bg="#ecf0f1"
     )
-    etiqueta.pack(pady=10)
+    etiqueta_formato.pack(pady=10)
 
-    def calcular():
-        # ==================================================
-        # ===   ESPACIO PARA CÓDIGO DE RAFAEL gaaa            ===
-        # ==================================================
-        # Aquí RAFAEL debe colocar su rutina.
+    def mostrar_resultados(puntos):
+        # Ventana secundaria para mostrar resultados
+        res_win = tk.Toplevel(win)
+        res_win.title("Resultados - Área 4")
+        res_win.geometry("450x400")
+        res_win.configure(bg="#ecf0f1")
 
-        messagebox.showinfo("Calcular", "Se ejecutó el cálculo de Rafael")
+        def descargar():
+            # Botón para guardar el nuevo .txt
+            ruta_guardado = filedialog.asksaveasfilename(
+                defaultextension=".txt",
+                filetypes=[("Text Files", "*.txt")],
+                title="Guardar puntos filtrados"
+            )
+            if ruta_guardado:
+                try:
+                    with open(ruta_guardado, 'w', encoding='utf-8') as f:
+                        for p in puntos:
+                            f.write(p + "\n")
+                    messagebox.showinfo("Éxito", "Archivo guardado correctamente.")
+                except Exception as e:
+                    messagebox.showerror("Error", f"No se pudo guardar el archivo:\n{e}")
 
-    boton_calcular = ttk.Button(win, text="Calcular", command=calcular)
-    boton_calcular.pack(pady=15)
+        # Botón de descarga al principio
+        btn_descargar = ttk.Button(res_win, text="Descargar Archivo .txt", command=descargar)
+        btn_descargar.pack(pady=15)
+
+        # Cuadro de texto para mostrar los puntos
+        text_area = tk.Text(res_win, wrap="none", height=15, width=50)
+        text_area.pack(padx=15, pady=5, fill="both", expand=True)
+
+        # Insertamos los puntos en el cuadro
+        for p in puntos:
+            text_area.insert(tk.END, p + "\n")
+        
+        text_area.config(state=tk.DISABLED) # Lo hacemos de solo lectura
+
+    def procesar_archivo():
+        ruta_archivo = filedialog.askopenfilename(
+            title="Seleccionar archivo de puntos",
+            filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+        )
+        
+        if not ruta_archivo:
+            return # El usuario canceló la selección
+
+        puntos_filtrados = []
+        try:
+            with open(ruta_archivo, 'r', encoding='utf-8') as file:
+                for linea in file:
+                    linea_limpia = linea.strip()
+                    if not linea_limpia:
+                        continue
+                    
+                    # Separamos asumiendo espacios o tabulaciones. 
+                    # Reemplazamos comas por espacios por si acaso viene separado por comas.
+                    partes = linea_limpia.replace(',', ' ').split()
+                    
+                    if len(partes) >= 4:
+                        try:
+                            # Nombre = partes[0], Este = partes[1], Norte = partes[2], Cota = partes[3]
+                            este = float(partes[1])
+                            norte = float(partes[2])
+                            
+                            # Criterio del Cuadro 4
+                            if norte >= 7460100 and este >= 361600:
+                                puntos_filtrados.append(linea_limpia)
+                        except ValueError:
+                            # Si no se puede convertir a float, asumimos que es el encabezado y lo agregamos igual
+                            if "Norte" in linea_limpia or "Este" in linea_limpia:
+                                puntos_filtrados.insert(0, linea_limpia)
+            
+            if len(puntos_filtrados) > 0:
+                mostrar_resultados(puntos_filtrados)
+            else:
+                messagebox.showinfo("Resultado", "No se encontraron puntos dentro del Área 4.")
+                
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un error al procesar el archivo:\n{e}")
+
+    # Botón para subir el archivo
+    boton_subir = ttk.Button(win, text="Subir Archivo", command=procesar_archivo)
+    boton_subir.pack(pady=15)
 
     boton_volver = ttk.Button(
         win,
@@ -258,7 +332,6 @@ def ventana_Rafael():
     boton_volver.pack(pady=10)
 
     win.protocol("WM_DELETE_WINDOW", lambda: volver_al_menu(win))
-
 
 # ==================================================
 # ===   SUBRUTINA WILSON                         ===
@@ -446,7 +519,7 @@ b3.pack(pady=10, ipadx=20, ipady=5)
 b4 = ttk.Button(root, text="Ignacio", command=ventana_Ignacio)
 b4.pack(pady=10, ipadx=20, ipady=5)
 
-b5 = ttk.Button(root, text="Rafael", command=ventana_Rafael)
+b5 = ttk.Button(root, text="Rafael (Cuadro 4)", command=ventana_Rafael)
 b5.pack(pady=10, ipadx=20, ipady=5)
 
 b6 = ttk.Button(root, text="Wilson", command=ventana_Wilson)
