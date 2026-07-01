@@ -315,13 +315,13 @@ def ventana_Andres():
     root.withdraw()
 
     win = tk.Toplevel(root)
-    win.title("Ventana Andrés")
+    win.title("Ventana Andres")
     win.geometry("450x300")
     win.configure(bg="#ecf0f1")
 
     titulo = ttk.Label(
         win,
-        text="Subrutina: Andrés",
+        text="Subrutina: Andres",
         font=("Segoe UI", 18, "bold"),
         background="#ecf0f1"
     )
@@ -336,34 +336,41 @@ def ventana_Andres():
     etiqueta.pack(pady=10)
 
     def calcular():
+        # ==================================================
+        # ===   ESPACIO PARA CÓDIGO DE ANDRES            ===
+        # ==================================================
         archivo_origen = 'batimetria_mejillones.asc'
-        archivo_destino = 'segmentacion_poligono_6.txt'
         
-        print(f"Iniciando extracción de coordenadas desde: {archivo_origen}")
+        # Centro y radio del Polígono 6 (Rombo)
+        x_c = 353600.0
+        y_c = 7452600.0
+        radio = 5000.0
+        
+        print(f"Iniciando evaluación espacial desde: {archivo_origen}")
 
         try:
             with open(archivo_origen, 'r') as f_in:
                 for linea in f_in:
                     try:
-                        # Parseo de datos para extraer X e Y
                         datos = linea.strip().replace(',', ' ').split()
                         
                         if len(datos) >= 2:
                             x = float(datos[0])
                             y = float(datos[1])
                             
-                            # Aquí irá la inecuación del rombo en el próximo commit
-                            
+                            # Inecuación geométrica para delimitar el rombo
+                            if abs(x - x_c) + abs(y - y_c) <= radio:
+                                pass # Aquí exportaremos los puntos en el último commit
+                                
                     except ValueError:
-                        continue # Omite encabezados o líneas sin números
+                        continue
             
-            # Mensaje en pantalla confirmando el segundo avance
-            messagebox.showinfo("Éxito", "Extracción de coordenadas X e Y finalizada correctamente.")
+            messagebox.showinfo("Éxito", "Se aplicó el filtro espacial del Polígono 6 a las coordenadas.")
 
         except FileNotFoundError:
-            messagebox.showerror("Error crítico", f"No se encontró el archivo: {archivo_origen}")
+            messagebox.showerror("Error", f"No se encontró el archivo: {archivo_origen}")
 
-    boton_calcular = ttk.Button(win, text="Ejecutar Filtro", command=calcular)
+    boton_calcular = ttk.Button(win, text="Calcular", command=calcular)
     boton_calcular.pack(pady=15)
 
     boton_volver = ttk.Button(
