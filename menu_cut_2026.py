@@ -69,7 +69,7 @@ def ventana_main():
 
 
 # ==================================================
-# ===   SUBRUTINA AYLEEN                         ===
+# ===   SUBRUTINA AYLEEN gaa                        ===
 # ==================================================
 def ventana_ayleen():
     root.withdraw()
