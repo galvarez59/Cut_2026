@@ -1,27 +1,35 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
 import pandas as pd
-import numpy as np
-from scipy.ndimage import uniform_filter
-
-def cargar_datos(archivo):
-    # 'on_bad_lines="warn"' permite que el programa continúe aunque encuentre filas irregulares
-    # 'sep=None' detecta automáticamente si usas espacios o comas
-    df = pd.read_csv(archivo, sep=None, engine='python', skiprows=1, on_bad_lines='skip')
-    
-    # Tomamos solo las columnas numéricas
-    datos = df.select_dtypes(include=[np.number]).values
-    return datos
-
-def aplicar_filtro_cuadrado(datos, tamano_ventana=3):
-    # uniform_filter suaviza los datos usando una ventana cuadrada
-    filtro = uniform_filter(datos, size=tamano_ventana, mode='constant')
-    return filtro
-
-if __name__ == "__main__":
-    archivo = "mejillones_ascii.txt"
-    try:
-        data = cargar_datos(archivo)
-        resultado = aplicar_filtro_cuadrado(data, tamano_ventana=3)
-        np.savetxt("resultado_filtrado.txt", resultado)
-        print("¡ÉXITO! Filtro aplicado. Resultado guardado en 'resultado_filtrado.txt'.")
-    except Exception as e:
-        print(f"Ocurrió un error: {e}")
+def calcular():
+        # ==================================================
+          # Ruta de tu archivo
+        archivo = r"C:\Users\aylle\OneDrive\Documentos\github 3\Cut_2026\mejillones_ascii.txt"
+        x_lim = [334100, 336600] 
+        y_lim = [7455100, 7457600] 
+            
+        try:
+                df = pd.read_csv(archivo, sep=r'\s+', engine='python', header=None, 
+                                names=['Letra', 'X', 'Y', 'Z'], on_bad_lines='skip')
+                
+                mask = (df['X'] >= x_lim[0]) & (df['X'] <= x_lim[1]) & \
+                    (df['Y'] >= y_lim[0]) & (df['Y'] <= y_lim[1])
+                
+                resultado = df[mask]
+                datos_puntos = resultado[['X', 'Y', 'Z']]
+                
+                # --- CAMBIOS PARA ARCGIS ---
+                # 1. Cambiamos la extensión a .csv
+                # 2. sep=',' usa comas para separar los valores
+                # 3. header=True guarda los títulos 'X', 'Y', 'Z' en la primera fila
+                datos_puntos.to_csv("resultado_cuadrado_1.csv", index=False, header=True, sep=',')
+                
+                # Convertimos a texto para mostrarlo en tu ventana
+                texto_puntos = datos_puntos.to_string(index=False)
+                
+                mensaje_final = f"¡Cálculo terminado con éxito!\n\nSe han extraído {len(resultado)} puntos.\nArchivo guardado: 'resultado_cuadrado_1.csv'\n\nPuntos encontrados:\n\n{texto_puntos}"
+                
+                messagebox.showinfo("Resultado del Cálculo", mensaje_final)
+                
+        except Exception as e:
+                messagebox.showerror("Error", f"Ocurrió un error al procesar el archivo: {e}")
